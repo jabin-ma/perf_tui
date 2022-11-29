@@ -24,9 +24,14 @@ project(perf_tui
         VERSION 1.0.0)
 set(CMAKE_CXX_FLAGS "-O3")
 add_executable(perf_tui main.cpp)
+add_library(sysmonitor sysmonitor/cpu.cpp
+        sysmonitor/cpu.h
+        sysmonitor/machine.cpp
+        sysmonitor/machine.h
+        sysmonitor/strings_utils.cpp
+        sysmonitor/strings_utils.h)
 
-add_library(sysmonitor sysmonitor/cpu.cpp sysmonitor/cpu.h sysmonitor/machine.cpp sysmonitor/machine.h)
-
+include_directories(sysmonitor)
 set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
 set_target_properties(sysmonitor PROPERTIES CXX_STANDARD 20)
 #-----------------------------------------------------------------------
@@ -34,4 +39,5 @@ set_target_properties(sysmonitor PROPERTIES CXX_STANDARD 20)
 target_link_libraries(perf_tui
         PRIVATE ftxui::screen
         PRIVATE ftxui::dom
-        PRIVATE ftxui::component)
+        PRIVATE ftxui::component
+        PRIVATE sysmonitor)

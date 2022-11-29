@@ -2,11 +2,11 @@
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/dom/elements.hpp"
 #include <iostream>
+#include "cpu.h"
 
 using namespace ftxui;
 
-int main() {
-
+void createview(){
   auto screen = ScreenInteractive::Fullscreen();
 
   auto my_graph = [&](int width, int height) {
@@ -96,5 +96,11 @@ int main() {
     });
   });
   screen.Loop(main_renderer);
+}
+
+
+int main() {
+  std::cout << "main" <<std::endl;
+  sysmonitor::Cpu cpu;
   return 0;
 }
