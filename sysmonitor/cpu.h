@@ -4,20 +4,26 @@
 
 #ifndef PERF_TUI_CPU_H
 #define PERF_TUI_CPU_H
-#include "dirent.h"
 #include <cstdlib>
+#include <vector>
 namespace sysmonitor {
 
   class Core {
+private:
+    bool online;
   };
 
   class Cluster {
+public:
+    std::vector<Core> cores;
+    std::vector<uint32_t> freq;
   };
 
   class Cpu {
 
 public:
     Cpu();
+    std::vector<Cluster> clusters;
   };
 
 }// namespace sysmonitor
