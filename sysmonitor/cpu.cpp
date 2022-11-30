@@ -28,7 +28,6 @@ Cpu::Cpu() {
     return;
   }
 
-
   auto ptrStub = pDirent;
   vector<string> policyFileNames(scan_count);
   vector<vector<uint32_t>> clusterFreq;
@@ -45,9 +44,9 @@ Cpu::Cpu() {
       clusterFreq.emplace_back(*nums);
 //      clusterFreq
     }
-    free(*pDirent);//free *
+    free(*pDirent);//free **
   }
-  free(ptrStub);//free **
+  free(ptrStub);//free *
 
 
   for (const auto &cluster: clusterFreq){
