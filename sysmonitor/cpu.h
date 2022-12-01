@@ -4,9 +4,10 @@
 
 #ifndef PERF_TUI_CPU_H
 #define PERF_TUI_CPU_H
-#include <cstdlib>
 #include <vector>
+#include <string>
 namespace sysmonitor {
+  static const std::string cpu_base_path = "/sys/devices/system/cpu/cpufreq";
 
   class Core {
 private:
@@ -15,15 +16,22 @@ private:
 
   class Cluster {
 public:
-    std::vector<Core> cores;
+    std::string name;
+    std::vector<uint32_t> cores;
     std::vector<uint32_t> freq;
+    void update();
   };
 
   class Cpu {
-
 public:
     Cpu();
     std::vector<Cluster> clusters;
+  };
+
+  struct myCluset{
+    std::string name;
+    std::string cores;
+    std::vector<uint32_t> freq;
   };
 
 }// namespace sysmonitor

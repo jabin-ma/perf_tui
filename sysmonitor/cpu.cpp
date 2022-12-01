@@ -3,16 +3,13 @@
 #include <cinttypes>
 #include <dirent.h>
 #include <iostream>
-#include <vector>
 using namespace sysmonitor;
 using namespace std;
 
-
 Cpu::Cpu() {
   struct dirent **pDirent;
-  const char cpu_base_path[] = "/sys/devices/system/cpu/cpufreq";
   int scan_count = scandir(
-          cpu_base_path, &pDirent,
+          cpu_base_path.c_str(), &pDirent,
           [](auto dire) { return (int) StartsWith(dire->d_name, "policy"); },
           [](auto dire_a, auto dire_b) {
             uint32_t policyN1, policyN2;
@@ -23,37 +20,34 @@ Cpu::Cpu() {
             return (int) (policyN1 - policyN2);
           });
 
-  if (scan_count == -1 || scan_count == 0) { /*error */
+  if (scan_count <= 0) { /*error */
     cout << "ERROR!" << endl;
     return;
   }
-
-  auto ptrStub = pDirent;
-  vector<string> policyFileNames(scan_count);
-  vector<vector<uint32_t>> clusterFreq;
-  for (auto &item: policyFileNames) {
-    item = (*(pDirent++))->d_name;
-    //
-    //    for (const auto &name: {"available"/*, "boost"*/}) {
-    auto freqLevelPath = StringPrintf("%s/%s/scaling_available_frequencies", cpu_base_path, item.c_str());
-    auto nums = readNumbersFromFile(freqLevelPath);
-    if (!nums) {
-      cout << "Not found: " << freqLevelPath << endl;
-    } else {
-      cout << "PUSH FREQS " << freqLevelPath <<endl;
-      clusterFreq.emplace_back(*nums);
-//      clusterFreq
-    }
+  // 解析节点内容 (例如 policy0 policy3 policy7)
+  auto const ptrStub = pDirent;
+  clusters.resize(scan_count);
+  for (auto &item: clusters) {
+    // cluster begin
+    item.name = (*(pDirent++))->d_name;
+    item.update();
     free(*pDirent);//free **
   }
   free(ptrStub);//free *
+}
 
-
-  for (const auto &cluster: clusterFreq){
-    cout << "CORE ------ BEGIN -------" <<endl;
-    for (const auto &freq: cluster){
-        cout << "FREQ:" <<freq <<endl;
-    }
-    cout << "CORE ------ END ------" <<endl;
+bool readNumbersFromFileToVector(const string &file, vector<uint32_t> &des) {
+  auto nums = readNumbersFromFile(file);
+  if (nums) {
+    des.insert(des.begin(), nums->begin(), nums->end());
+  } else {
+    return false;
   }
+  return true;
+}
+
+void Cluster::update() {
+  // 将节点里面的频率信息以及cpu集所对应的cpuid读到数组中
+  readNumbersFromFileToVector(StringPrintf("%s/%s/%s", cpu_base_path.c_str(), name.c_str(), "scaling_available_frequencies"), freq);
+  readNumbersFromFileToVector(StringPrintf("%s/%s/%s", cpu_base_path.c_str(), name.c_str(), "related_cpus"), cores);
 }

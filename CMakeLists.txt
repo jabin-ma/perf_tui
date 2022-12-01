@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.23)
-
+set(CMAKE_CXX_STANDARD 20)
 # --- Fetch FTXUI --------------------------------------------------------------
 include(FetchContent)
 
@@ -32,8 +32,6 @@ add_library(sysmonitor sysmonitor/cpu.cpp
         sysmonitor/strings_utils.h)
 
 include_directories(sysmonitor)
-set_target_properties(${PROJECT_NAME} PROPERTIES CXX_STANDARD 20)
-set_target_properties(sysmonitor PROPERTIES CXX_STANDARD 20)
 #-----------------------------------------------------------------------
 
 target_link_libraries(perf_tui

@@ -1,18 +1,18 @@
+#include "cpu.h"
 #include "ftxui/component/component.hpp"
 #include "ftxui/component/screen_interactive.hpp"
 #include "ftxui/dom/elements.hpp"
 #include <iostream>
-#include "cpu.h"
 
 using namespace ftxui;
 
-void createview(){
+void createview() {
   auto screen = ScreenInteractive::Fullscreen();
 
   auto my_graph = [&](int width, int height) {
     std::vector<int> output(width);
     for (int i = 0; i < width; ++i) {
-      output[i] = i%(width/10) ? 0:height;
+      output[i] = i % (width / 10) ? 0 : height;
     }
     return output;
   };
@@ -100,7 +100,22 @@ void createview(){
 
 
 int main() {
-  std::cout << "main" <<std::endl;
+  std::cout << "main" << std::endl;
   sysmonitor::Cpu cpu;
+  for (const auto &item: cpu.clusters) {
+    std::cout << item.name;
+
+    std::cout << "CORE:";
+    for (const auto &f: item.cores) {
+      std::cout << " " << f;
+    }
+    std::cout << std::endl;
+
+    std::cout << "FREQ:";
+    for (const auto &f: item.freq) {
+      std::cout << " " << f;
+    }
+    std::cout << std::endl;
+  }
   return 0;
 }
