@@ -6,8 +6,8 @@
 using namespace sysmonitor;
 using namespace std;
 
-Cpu::Cpu() {
-  struct dirent **pDirent;
+void Cpu::init() {
+  dirent **pDirent;
   int scan_count = scandir(
           cpu_base_path.c_str(), &pDirent,
           [](auto dire) { return (int) StartsWith(dire->d_name, "policy"); },
@@ -30,7 +30,7 @@ Cpu::Cpu() {
   for (auto &item: clusters) {
     // cluster begin
     item.name = (*(pDirent++))->d_name;
-    item.update();
+    item.updateMateData();
     free(*pDirent);//free **
   }
   free(ptrStub);//free *
@@ -46,8 +46,8 @@ bool readNumbersFromFileToVector(const string &file, vector<uint32_t> &des) {
   return true;
 }
 
-void Cluster::update() {
+void Cluster::updateMateData() {
   // 将节点里面的频率信息以及cpu集所对应的cpuid读到数组中
-  readNumbersFromFileToVector(StringPrintf("%s/%s/%s", cpu_base_path.c_str(), name.c_str(), "scaling_available_frequencies"), freq);
+  readNumbersFromFileToVector(StringPrintf("%s/%s/%s", cpu_base_path.c_str(), name.c_str(), "scaling_available_frequencies"), avl_freq);
   readNumbersFromFileToVector(StringPrintf("%s/%s/%s", cpu_base_path.c_str(), name.c_str(), "related_cpus"), cores);
 }

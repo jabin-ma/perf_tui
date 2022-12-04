@@ -18,20 +18,19 @@ private:
 public:
     std::string name;
     std::vector<uint32_t> cores;
-    std::vector<uint32_t> freq;
-    void update();
+    std::vector<uint32_t> avl_freq;
+
+    void updateMateData();
+
   };
 
   class Cpu {
-public:
-    Cpu();
-    std::vector<Cluster> clusters;
-  };
+private:
+    void init();
 
-  struct myCluset{
-    std::string name;
-    std::string cores;
-    std::vector<uint32_t> freq;
+public:
+    Cpu(){ init(); }
+    std::vector<Cluster> clusters;
   };
 
 }// namespace sysmonitor

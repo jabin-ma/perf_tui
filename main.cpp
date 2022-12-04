@@ -74,7 +74,7 @@ void createview() {
 
   int tab_index = 0;
   std::vector<std::string> tab_entries = {
-          "freq",
+          "avl_freq",
   };
   auto tab_selection =
           Menu(&tab_entries, &tab_index, MenuOption::HorizontalAnimated());
@@ -112,7 +112,7 @@ int main() {
     std::cout << std::endl;
 
     std::cout << "FREQ:";
-    for (const auto &f: item.freq) {
+    for (const auto &f: item.avl_freq) {
       std::cout << " " << f;
     }
     std::cout << std::endl;
